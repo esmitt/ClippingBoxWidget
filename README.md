@@ -4,6 +4,8 @@ A single project made in [VTK] to handle a `BoxWidget2` as a clipping box. It us
 
 A [vtkClipPolyData] is used with a clip function defined as six `vtkPlanes`, extracted from the `vtkBoxWidget2`. Also, a callback (i.e. `vtkCommand::InteractionEvent` type) is create to update on real time the clipped area.
 
+The code used C++ 11 (to handle the callback function).
+
 ### Installation
 
 Dillinger requires [Cmake] to create the project, using a GUI or a simple `cmake` command.
