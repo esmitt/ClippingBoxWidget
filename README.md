@@ -8,7 +8,7 @@ The code used C++ 11 (to handle the callback function).
 
 ### Installation
 
-Dillinger requires [Cmake] to create the project, using a GUI or a simple `cmake` command.
+It requires [Cmake] to create the project, using a GUI or a simple `cmake` command.
 
 >To do: close the clipped area with new polydata
 
