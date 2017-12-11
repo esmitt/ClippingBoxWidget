@@ -11,10 +11,10 @@
 #include <vtkActor.h>
 #include <vtkProperty.h>
 #include <vtkPlane.h>
+#include <vtkBox.h>
 #include <vtkClipPolyData.h>
 #include <vtkPlanes.h>
 #include <vtkInteractorStyleTrackballCamera.h>
-#include <vtkPlaneCollection.h>
 #include <vtkSphereSource.h>
 #include <vtkBoxWidget2.h>
 
@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
   // clipping structure
   vtkSmartPointer<vtkClipPolyData> clipperPoly = vtkSmartPointer<vtkClipPolyData>::New();
   clipperPoly->SetInputConnection(sphereSource->GetOutputPort()); //also clipperPoly->SetInputData(sphereSource->GetOutput());
-  clipperPoly->SetClipFunction(planesClipping); 
+  clipperPoly->SetClipFunction(planesClipping);
 
   //mapper
   vtkSmartPointer<vtkDataSetMapper> selectMapper = vtkSmartPointer<vtkDataSetMapper>::New();
@@ -69,18 +69,12 @@ int main(int argc, char *argv[])
   //callback function
   auto interactionFcn = [](vtkObject* caller, long unsigned int eventId, void* clientData, void* callData) {
     vtkSmartPointer<vtkBoxWidget2> boxWidget = vtkBoxWidget2::SafeDownCast(caller);
-    vtkSmartPointer<vtkPlanes> planes = vtkSmartPointer<vtkPlanes>::New();
+    vtkSmartPointer<vtkPlanes> planesClipping = vtkSmartPointer<vtkPlanes>::New();
+    vtkBoxRepresentation::SafeDownCast(boxWidget->GetRepresentation())->GetPlanes(planesClipping);
+
     //get the planes
-    vtkBoxRepresentation::SafeDownCast(boxWidget->GetRepresentation())->GetPlanes(planes);
-    vtkSmartPointer<vtkPlaneCollection> planesColl = vtkSmartPointer<vtkPlaneCollection>::New();
-    planesColl->AddItem(planes->GetPlane(0));
-    planesColl->AddItem(planes->GetPlane(1));
-    planesColl->AddItem(planes->GetPlane(2));
-    planesColl->AddItem(planes->GetPlane(3));
-    planesColl->AddItem(planes->GetPlane(4));
-    planesColl->AddItem(planes->GetPlane(5));
     vtkClipPolyData* clipperPoly = static_cast<vtkClipPolyData*>(clientData);
-    clipperPoly->SetClipFunction(planes);
+    clipperPoly->SetClipFunction(planesClipping);
     clipperPoly->InsideOutOn();
     clipperPoly = nullptr;
   };
@@ -91,6 +85,7 @@ int main(int argc, char *argv[])
 
   // Add the actor
   ren1->AddActor(selectActor);
+
 
   // Generate a camera
   vtkSmartPointer<vtkInteractorStyleTrackballCamera> cameraStyle = vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New();
